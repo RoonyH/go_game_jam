@@ -1,13 +1,16 @@
 package chuckablast
 
+import (
+	"errors"
+	"fmt"
+)
+
 const (
 	pInvalid, pEmpty, pFull = 0, 1, 2
 )
 
 // Point represents a point in the board
-type Point struct {
-	state int
-}
+type Point [2]int
 
 // Board represents chuck a blast board
 type Board struct {
@@ -68,4 +71,54 @@ func (board *Board) Select(x int, y int) (valid *[][2]int) {
 	}
 
 	return &moves
+}
+
+// Move moves a piece from source to target
+// It returns true only if the move is successful
+func (board *Board) Move(source Point, target Point) bool {
+	if board.b[source[0]][source[1]] != pFull ||
+		board.b[target[0]][target[1]] != pEmpty {
+		// source has to be full and target has to be empty
+		return false
+	}
+
+	middle, err := validateMove(source, target)
+
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+
+	if board.b[middle[0]][middle[1]] != pFull {
+		// middle has to be full
+		return false
+	}
+
+	board.b[middle[0]][middle[1]] = pEmpty
+
+	return true
+}
+
+func validateMove(source Point, target Point) (middle Point, err error) {
+	if source[0] == target[0] {
+		// Move is on y axis
+		if target[1] == source[1]+2 {
+			// Move is upward
+			return Point{source[0], source[1] + 1}, nil
+		} else if target[1] == source[1]-2 {
+			// Move is downward
+			return Point{source[0], source[1] - 1}, nil
+		}
+	} else if source[1] == target[1] {
+		// Move is on x axis
+		if target[0] == source[0]+2 {
+			// Move is leftward
+			return Point{source[0] + 1, source[1]}, nil
+		} else if target[0] == source[0]-2 {
+			// Move is rightward
+			return Point{source[0] - 1, source[1]}, nil
+		}
+	}
+
+	return Point{0, 0}, errors.New("invalid move")
 }

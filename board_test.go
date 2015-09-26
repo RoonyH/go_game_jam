@@ -104,3 +104,46 @@ func TestSelect(t *testing.T) {
 		}
 	}
 }
+
+func TestMove(t *testing.T) {
+	testBoard := NewBoard()
+
+	if testBoard == nil {
+		t.Fatal("Nil board")
+	}
+
+	// Mark some points as empty
+	testBoard.b[7][6] = pEmpty
+	testBoard.b[7][4] = pEmpty
+
+	tests := []struct {
+		source  Point
+		target  Point
+		middle  Point
+		success bool
+	}{
+		{Point{7, 6}, Point{7, 4}, Point{7, 5}, false},
+		{Point{9, 5}, Point{9, 7}, Point{9, 6}, false},
+		{Point{9, 5}, Point{3, 5}, Point{}, false},
+		{Point{9, 6}, Point{7, 6}, Point{8, 6}, true},
+		{Point{7, 2}, Point{7, 4}, Point{7, 3}, true},
+		{Point{6, 4}, Point{6, 6}, Point{6, 5}, true},
+	}
+
+	for _, test := range tests {
+		success := testBoard.Move(test.source, test.target)
+
+		if success != test.success {
+			t.Fatal("Wrong success state for", test.source, test.target,
+				"Got", success, "Expected", test.success)
+		}
+
+		if !success {
+			continue
+		}
+
+		if testBoard.b[test.middle[0]][test.middle[1]] != pEmpty {
+			t.Fatal("Middle piece not removed", test.source, test.target)
+		}
+	}
+}
