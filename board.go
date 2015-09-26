@@ -38,6 +38,34 @@ func initb(b *[13][13]int) {
 }
 
 // Select returns valid targets from the selected point
-func (b *Board) Select(x int, y int) (valid *[]Point) {
-	return nil
+func (board *Board) Select(x int, y int) (valid *[][2]int) {
+
+	moves := [][2]int{}
+
+	if board.b[x][y] != pFull {
+		//Source point is not full
+		return &moves
+	}
+
+	if board.b[x][y-1] == pFull && board.b[x][y-2] == pEmpty {
+		// Upward possible
+		moves = append(moves, [2]int{x, y - 2})
+	}
+
+	if board.b[x][y+1] == pFull && board.b[x][y+2] == pEmpty {
+		// Downward possible
+		moves = append(moves, [2]int{x, y + 2})
+	}
+
+	if board.b[x+1][y] == pFull && board.b[x+2][y] == pEmpty {
+		// Leftward possible
+		moves = append(moves, [2]int{x + 2, y})
+	}
+
+	if board.b[x-1][y] == pFull && board.b[x-2][y] == pEmpty {
+		// Rightward possible
+		moves = append(moves, [2]int{x - 2, y})
+	}
+
+	return &moves
 }
