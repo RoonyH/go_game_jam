@@ -22,7 +22,7 @@ type Board struct {
 
 	selected   chuckablast.Point
 	held       bool
-	validMoves []chuckablast.Point
+	validMoves *[]chuckablast.Point
 }
 
 // Draw implements termloop.Drawable.Draw
@@ -48,6 +48,8 @@ func (board *Board) Draw(screen *termloop.Screen) {
 	} else {
 		board.drawSelected(screen, board.selected[0], board.selected[1])
 	}
+
+	board.drawValidMoves(screen)
 }
 
 // Tick implements termloop.Drawable.Tick
@@ -55,12 +57,32 @@ func (board *Board) Tick(ev termloop.Event) {
 	if ev.Type == termloop.EventKey {
 		switch ev.Key {
 		case termloop.KeyArrowRight:
+			if board.held {
+				if board.move("right") {
+					break
+				}
+			}
 			board.selectNextFull("right")
 		case termloop.KeyArrowLeft:
+			if board.held {
+				if board.move("left") {
+					break
+				}
+			}
 			board.selectNextFull("left")
 		case termloop.KeyArrowUp:
+			if board.held {
+				if board.move("up") {
+					break
+				}
+			}
 			board.selectNextFull("up")
 		case termloop.KeyArrowDown:
+			if board.held {
+				if board.move("down") {
+					break
+				}
+			}
 			board.selectNextFull("down")
 		case termloop.KeySpace:
 			board.hold()
@@ -122,19 +144,57 @@ func (board *Board) selectNextFull(direction string) {
 	}
 }
 
+func (board *Board) move(direction string) bool {
+	success := false
+	switch direction {
+	case "right":
+		success = board.Move(board.selected,
+			chuckablast.Point{board.selected[0] + 2, board.selected[1]})
+		if success {
+			board.selected[0] = board.selected[0] + 2
+		}
+	case "left":
+		success = board.Move(board.selected,
+			chuckablast.Point{board.selected[0] - 2, board.selected[1]})
+		if success {
+			board.selected[0] = board.selected[0] - 2
+		}
+	case "up":
+		success = board.Move(board.selected,
+			chuckablast.Point{board.selected[0], board.selected[1] - 2})
+		if success {
+			board.selected[1] = board.selected[1] - 2
+		}
+	case "down":
+		success = board.Move(board.selected,
+			chuckablast.Point{board.selected[0], board.selected[1] + 2})
+		if success {
+			board.selected[1] = board.selected[1] + 2
+		}
+	}
+	board.hold()
+	return success
+}
+
 func (board *Board) hold() {
 	points := board.Points()
 	if points[board.selected[0]][board.selected[1]] != chuckablast.PFull {
 		return
 	}
-	board.held = !board.held
 
+	if board.held {
+		board.validMoves = &[]chuckablast.Point{}
+	} else {
+		board.validMoves = board.Select(board.selected[0], board.selected[1])
+	}
+
+	board.held = !board.held
 }
 
 func main() {
 	b := chuckablast.NewBoard()
 	board := &Board{b, &[13][13]point{}, chuckablast.Point{5, 2}, false,
-		[]chuckablast.Point{}}
+		&[]chuckablast.Point{}}
 
 	board.build()
 
@@ -181,4 +241,11 @@ func (board *Board) drawLocked(screen *termloop.Screen, x int, y int) {
 func (board *Board) drawSelectedEmpty(screen *termloop.Screen, x int, y int) {
 	board.spots[x][y].outer.SetColor(termloop.ColorRed)
 	board.spots[x][y].outer.Draw(screen)
+}
+
+func (board *Board) drawValidMoves(screen *termloop.Screen) {
+	for _, spot := range *board.validMoves {
+		board.spots[spot[0]][spot[1]].outer.SetColor(termloop.ColorCyan)
+		board.spots[spot[0]][spot[1]].outer.Draw(screen)
+	}
 }

@@ -53,9 +53,9 @@ func (board *Board) Points() (points *[13][13]int) {
 }
 
 // Select returns valid targets from the selected point
-func (board *Board) Select(x int, y int) (valid *[][2]int) {
+func (board *Board) Select(x int, y int) (valid *[]Point) {
 
-	moves := [][2]int{}
+	moves := []Point{}
 
 	if board.b[x][y] != PFull {
 		//Source point is not full
@@ -64,7 +64,7 @@ func (board *Board) Select(x int, y int) (valid *[][2]int) {
 
 	if board.b[x][y-1] == PFull && board.b[x][y-2] == PEmpty {
 		// Upward possible
-		moves = append(moves, [2]int{x, y - 2})
+		moves = append(moves, Point{x, y - 2})
 	}
 
 	if board.b[x][y+1] == PFull && board.b[x][y+2] == PEmpty {
