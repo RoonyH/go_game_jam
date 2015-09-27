@@ -113,6 +113,21 @@ func (board *Board) Move(source Point, target Point) bool {
 	return true
 }
 
+// Test tests if the game is over
+func (board *Board) Test() bool {
+	for i := 0; i <= 12; i++ {
+		for j := 0; j <= 12; j++ {
+			if board.b[i][j] == PFull {
+				if len(*(board.Select(i, j))) > 0 {
+					return false
+				}
+			}
+		}
+	}
+
+	return true
+}
+
 func validateMove(source Point, target Point) (middle Point, err error) {
 	if source[0] == target[0] {
 		// Move is on y axis

@@ -23,6 +23,7 @@ type Board struct {
 	selected   chuckablast.Point
 	held       bool
 	validMoves *[]chuckablast.Point
+	gameOver   bool
 }
 
 // Draw implements termloop.Drawable.Draw
@@ -50,6 +51,9 @@ func (board *Board) Draw(screen *termloop.Screen) {
 	}
 
 	board.drawValidMoves(screen)
+	if board.gameOver {
+		board.drawEndtext(screen, "Game Over! No more valid moves")
+	}
 }
 
 // Tick implements termloop.Drawable.Tick
@@ -173,6 +177,8 @@ func (board *Board) move(direction string) bool {
 		}
 	}
 	board.hold()
+	board.gameOver = board.Test()
+
 	return success
 }
 
@@ -194,7 +200,7 @@ func (board *Board) hold() {
 func main() {
 	b := chuckablast.NewBoard()
 	board := &Board{b, &[13][13]point{}, chuckablast.Point{5, 2}, false,
-		&[]chuckablast.Point{}}
+		&[]chuckablast.Point{}, false}
 
 	board.build()
 
@@ -248,4 +254,9 @@ func (board *Board) drawValidMoves(screen *termloop.Screen) {
 		board.spots[spot[0]][spot[1]].outer.SetColor(termloop.ColorCyan)
 		board.spots[spot[0]][spot[1]].outer.Draw(screen)
 	}
+}
+
+func (board *Board) drawEndtext(screen *termloop.Screen, text string) {
+	screen.AddEntity(termloop.NewText(3, 1, text, termloop.ColorWhite,
+		termloop.ColorBlack))
 }
