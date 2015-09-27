@@ -61,14 +61,12 @@ func (board *Board) Draw(screen *termloop.Screen) {
 		remaining := board.GetRemaining()
 		r := strconv.Itoa(remaining)
 
-		board.drawEndtext(screen, 3, 1,
+		board.drawEndtext(screen, 0,
 			"  Game Over! No more valid moves.            ")
-		board.drawEndtext(screen, 3, 2,
+		board.drawEndtext(screen, 1,
 			"  You ended up with "+r+" pieces.                ")
-		board.drawEndtext(screen, 3, 3,
+		board.drawEndtext(screen, 2,
 			"  Press Enter to start again or Esc to end.  ")
-
-		board.gameOver = false
 	}
 }
 
@@ -128,6 +126,11 @@ func (board *Board) build() {
 			board.spots[i][j].inner = termloop.NewRectangle(
 				i*pw+1, j*pl+1, pw-2, pl-2, termloop.ColorWhite)
 		}
+	}
+	for i := 1; i <= 4; i++ {
+		tltext := termloop.NewText(3, i, "", termloop.ColorWhite,
+			termloop.ColorBlack)
+		board.texts = append(board.texts, tltext)
 	}
 }
 
@@ -283,10 +286,7 @@ func (board *Board) drawValidMoves(screen *termloop.Screen) {
 	}
 }
 
-func (board *Board) drawEndtext(screen *termloop.Screen, x int, y int,
-	text string) {
-	tltext := termloop.NewText(x, y, text, termloop.ColorWhite,
-		termloop.ColorBlack)
-	board.texts = append(board.texts, tltext)
-	screen.AddEntity(tltext)
+func (board *Board) drawEndtext(screen *termloop.Screen, i int, text string) {
+	board.texts[i].SetText(text)
+	board.texts[i].Draw(screen)
 }
