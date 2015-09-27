@@ -10,7 +10,7 @@ Chuck-A-Blast is a board game that used to be somewhat popular in my country som
 
 * There is only one way to remove a piece. When two pieces and a hole is next to each other, with a piece in the middle the piece on the side can be moved over the piece in the middle to the hole in the side. And then the piece in the middle is Blasted and removed from the board.
 
-* You go from <piece> <piece> <hole> to <hole> <hole> <piece>
+* You go from `<piece> <piece> <hole>` to `<hole> <hole> <piece>`
 
 * Game goes on until there are no such valid moves.
 
@@ -25,4 +25,4 @@ Apart from the standard go packages its only dependancy is the awesome [termloop
 The code is written in few hours and I am new to go.
 The code is pretty bad :( I will refactor it soon.
 
-If you are looking inside I appologies for what ever horrible things you may see.
+If you are looking inside I appologize for what ever horrible things you may see.
