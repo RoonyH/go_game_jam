@@ -14,6 +14,19 @@ Chuck-A-Blast is a board game that used to be somewhat popular in my country som
 
 * Game goes on until there are no such valid moves.
 
+### How to run
+If you have Go,
+clone the repo and get [termloop](https://github.com/JoelOtter/termloop) and run `main/main.go`
+
+~~~
+git clone https://github.com/RoonyH/go_game_jam/
+go get -u github.com/JoelOtter/termloop 
+cd go_game_jam
+go run main/main.go
+~~~
+
+I will add some binaries soon.
+
 ### Behind the scenes
 
 This implementation of Chuck-A-Blast is pure Go.
