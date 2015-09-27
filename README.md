@@ -14,6 +14,8 @@ Chuck-A-Blast is a board game that used to be somewhat popular in my country som
 
 * Game goes on until there are no such valid moves.
 
+* Use arrow keys select a piece to move. Press space to hold the piece. Possible target holes, if any, are now shown. Press the arrow key on the direction of the target hole.
+
 ### How to run
 If you have Go,
 clone the repo and get [termloop](https://github.com/JoelOtter/termloop) and run `main/main.go`
