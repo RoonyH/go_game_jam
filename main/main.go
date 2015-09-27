@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strconv"
+
 	"github.com/JoelOtter/termloop"
 	"github.com/RoonyH/chuckablast"
 )
@@ -15,6 +17,8 @@ type point struct {
 	inner *termloop.Rectangle
 }
 
+var level *termloop.BaseLevel
+
 // Board is a board
 type Board struct {
 	*chuckablast.Board
@@ -24,6 +28,7 @@ type Board struct {
 	held       bool
 	validMoves *[]chuckablast.Point
 	gameOver   bool
+	texts      []*termloop.Text
 }
 
 // Draw implements termloop.Drawable.Draw
@@ -52,7 +57,18 @@ func (board *Board) Draw(screen *termloop.Screen) {
 
 	board.drawValidMoves(screen)
 	if board.gameOver {
-		board.drawEndtext(screen, "Game Over! No more valid moves")
+
+		remaining := board.GetRemaining()
+		r := strconv.Itoa(remaining)
+
+		board.drawEndtext(screen, 3, 1,
+			"  Game Over! No more valid moves.            ")
+		board.drawEndtext(screen, 3, 2,
+			"  You ended up with "+r+" pieces.                ")
+		board.drawEndtext(screen, 3, 3,
+			"  Press Enter to start again or Esc to end.  ")
+
+		board.gameOver = false
 	}
 }
 
@@ -90,6 +106,16 @@ func (board *Board) Tick(ev termloop.Event) {
 			board.selectNextFull("down")
 		case termloop.KeySpace:
 			board.hold()
+		case termloop.KeyEnter:
+			b := chuckablast.NewBoard()
+			for _, t := range board.texts {
+				level.RemoveEntity(t)
+			}
+			level.RemoveEntity(board)
+			board := &Board{b, &[13][13]point{}, chuckablast.Point{5, 2}, false,
+				&[]chuckablast.Point{}, false, []*termloop.Text{}}
+			board.build()
+			level.AddEntity(board)
 		}
 	}
 }
@@ -200,13 +226,13 @@ func (board *Board) hold() {
 func main() {
 	b := chuckablast.NewBoard()
 	board := &Board{b, &[13][13]point{}, chuckablast.Point{5, 2}, false,
-		&[]chuckablast.Point{}, false}
+		&[]chuckablast.Point{}, false, []*termloop.Text{}}
 
 	board.build()
 
 	game := termloop.NewGame()
 
-	level := termloop.NewBaseLevel(termloop.Cell{})
+	level = termloop.NewBaseLevel(termloop.Cell{})
 	game.Screen().SetLevel(level)
 
 	level.AddEntity(board)
@@ -215,6 +241,7 @@ func main() {
 }
 
 func (board *Board) drawInvalidP(screen *termloop.Screen, x int, y int) {
+	board.spots[x][y].inner.SetColor(termloop.ColorWhite)
 	board.spots[x][y].outer.Draw(screen)
 }
 
@@ -256,7 +283,10 @@ func (board *Board) drawValidMoves(screen *termloop.Screen) {
 	}
 }
 
-func (board *Board) drawEndtext(screen *termloop.Screen, text string) {
-	screen.AddEntity(termloop.NewText(3, 1, text, termloop.ColorWhite,
-		termloop.ColorBlack))
+func (board *Board) drawEndtext(screen *termloop.Screen, x int, y int,
+	text string) {
+	tltext := termloop.NewText(x, y, text, termloop.ColorWhite,
+		termloop.ColorBlack)
+	board.texts = append(board.texts, tltext)
+	screen.AddEntity(tltext)
 }

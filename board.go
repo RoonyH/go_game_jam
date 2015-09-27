@@ -128,6 +128,20 @@ func (board *Board) Test() bool {
 	return true
 }
 
+// GetRemaining returns number of pieces on the board
+func (board *Board) GetRemaining() int {
+	remaining := 0
+	for i := 0; i <= 12; i++ {
+		for j := 0; j <= 12; j++ {
+			if board.b[i][j] == PFull {
+				remaining++
+			}
+		}
+	}
+
+	return remaining
+}
+
 func validateMove(source Point, target Point) (middle Point, err error) {
 	if source[0] == target[0] {
 		// Move is on y axis
