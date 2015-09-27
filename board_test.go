@@ -14,19 +14,19 @@ func TestNewBoard(t *testing.T) {
 		y     int
 		state int
 	}{
-		{0, 0, pInvalid},
-		{12, 11, pInvalid},
-		{3, 3, pInvalid},
-		{9, 3, pInvalid},
-		{9, 10, pInvalid},
-		{3, 9, pInvalid},
-		{6, 2, pFull},
-		{9, 7, pFull},
-		{3, 6, pFull},
-		{6, 10, pFull},
-		{10, 5, pFull},
-		{6, 7, pFull},
-		{6, 6, pEmpty},
+		{0, 0, PInvalid},
+		{12, 11, PInvalid},
+		{3, 3, PInvalid},
+		{9, 3, PInvalid},
+		{9, 10, PInvalid},
+		{3, 9, PInvalid},
+		{6, 2, PFull},
+		{9, 7, PFull},
+		{3, 6, PFull},
+		{6, 10, PFull},
+		{10, 5, PFull},
+		{6, 7, PFull},
+		{6, 6, PEmpty},
 	}
 
 	for _, test := range tests {
@@ -71,11 +71,11 @@ func TestSelect(t *testing.T) {
 	}
 
 	// Mark some points as empty
-	testBoard.b[4][5] = pEmpty
-	testBoard.b[5][5] = pEmpty
-	testBoard.b[4][6] = pEmpty
-	testBoard.b[5][6] = pEmpty
-	testBoard.b[5][10] = pEmpty
+	testBoard.b[4][5] = PEmpty
+	testBoard.b[5][5] = PEmpty
+	testBoard.b[4][6] = PEmpty
+	testBoard.b[5][6] = PEmpty
+	testBoard.b[5][10] = PEmpty
 
 	tests = []struct {
 		x     int
@@ -113,8 +113,8 @@ func TestMove(t *testing.T) {
 	}
 
 	// Mark some points as empty
-	testBoard.b[7][6] = pEmpty
-	testBoard.b[7][4] = pEmpty
+	testBoard.b[7][6] = PEmpty
+	testBoard.b[7][4] = PEmpty
 
 	tests := []struct {
 		source  Point
@@ -142,7 +142,7 @@ func TestMove(t *testing.T) {
 			continue
 		}
 
-		if testBoard.b[test.middle[0]][test.middle[1]] != pEmpty {
+		if testBoard.b[test.middle[0]][test.middle[1]] != PEmpty {
 			t.Fatal("Middle piece not removed", test.source, test.target)
 		}
 	}
