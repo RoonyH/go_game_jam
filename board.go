@@ -107,6 +107,8 @@ func (board *Board) Move(source Point, target Point) bool {
 	}
 
 	board.b[middle[0]][middle[1]] = PEmpty
+	board.b[source[0]][source[1]] = PEmpty
+	board.b[target[0]][target[1]] = PFull
 
 	return true
 }

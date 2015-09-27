@@ -145,5 +145,13 @@ func TestMove(t *testing.T) {
 		if testBoard.b[test.middle[0]][test.middle[1]] != PEmpty {
 			t.Fatal("Middle piece not removed", test.source, test.target)
 		}
+
+		if testBoard.b[test.source[0]][test.source[1]] != PEmpty {
+			t.Fatal("Source piece not removed", test.source, test.target)
+		}
+
+		if testBoard.b[test.target[0]][test.target[1]] != PFull {
+			t.Fatal("Target piece not present", test.source, test.target)
+		}
 	}
 }
