@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	"github.com/JoelOtter/termloop"
-	"github.com/RoonyH/chuckablast"
 )
 
 const (
@@ -21,12 +20,12 @@ var level *termloop.BaseLevel
 
 // Board is a board
 type Board struct {
-	*chuckablast.Board
+	*Game
 	spots *[13][13]point
 
-	selected   chuckablast.Point
+	selected   Point
 	held       bool
-	validMoves *[]chuckablast.Point
+	validMoves *[]Point
 	gameOver   bool
 	texts      []*termloop.Text
 }
@@ -37,17 +36,17 @@ func (board *Board) Draw(screen *termloop.Screen) {
 
 	for i := 0; i <= 12; i++ {
 		for j := 0; j <= 12; j++ {
-			if points[i][j] == chuckablast.PInvalid {
+			if points[i][j] == PInvalid {
 				board.drawInvalidP(screen, i, j)
-			} else if points[i][j] == chuckablast.PFull {
+			} else if points[i][j] == PFull {
 				board.drawFullP(screen, i, j)
-			} else if points[i][j] == chuckablast.PEmpty {
+			} else if points[i][j] == PEmpty {
 				board.drawEmptyP(screen, i, j)
 			}
 		}
 	}
 
-	if points[board.selected[0]][board.selected[1]] == chuckablast.PEmpty {
+	if points[board.selected[0]][board.selected[1]] == PEmpty {
 		board.drawSelectedEmpty(screen, board.selected[0], board.selected[1])
 	} else if board.held {
 		board.drawLocked(screen, board.selected[0], board.selected[1])
@@ -61,14 +60,12 @@ func (board *Board) Draw(screen *termloop.Screen) {
 		remaining := board.GetRemaining()
 		r := strconv.Itoa(remaining)
 
-		board.drawEndtext(screen, 3, 1,
+		board.drawEndtext(screen, 0,
 			"  Game Over! No more valid moves.            ")
-		board.drawEndtext(screen, 3, 2,
+		board.drawEndtext(screen, 1,
 			"  You ended up with "+r+" pieces.                ")
-		board.drawEndtext(screen, 3, 3,
+		board.drawEndtext(screen, 2,
 			"  Press Enter to start again or Esc to end.  ")
-
-		board.gameOver = false
 	}
 }
 
@@ -107,13 +104,13 @@ func (board *Board) Tick(ev termloop.Event) {
 		case termloop.KeySpace:
 			board.hold()
 		case termloop.KeyEnter:
-			b := chuckablast.NewBoard()
+			b := NewGame()
 			for _, t := range board.texts {
 				level.RemoveEntity(t)
 			}
 			level.RemoveEntity(board)
-			board := &Board{b, &[13][13]point{}, chuckablast.Point{5, 2}, false,
-				&[]chuckablast.Point{}, false, []*termloop.Text{}}
+			board := &Board{b, &[13][13]point{}, Point{5, 2}, false,
+				&[]Point{}, false, []*termloop.Text{}}
 			board.build()
 			level.AddEntity(board)
 		}
@@ -129,6 +126,11 @@ func (board *Board) build() {
 				i*pw+1, j*pl+1, pw-2, pl-2, termloop.ColorWhite)
 		}
 	}
+	for i := 1; i <= 4; i++ {
+		tltext := termloop.NewText(3, i, "", termloop.ColorWhite,
+			termloop.ColorBlack)
+		board.texts = append(board.texts, tltext)
+	}
 }
 
 // getNextFull returns the next occupied point in the given direction
@@ -141,7 +143,7 @@ func (board *Board) selectNextFull(direction string) {
 		} else {
 			board.selected[0]++
 		}
-		if points[board.selected[0]][board.selected[1]] == chuckablast.PInvalid {
+		if points[board.selected[0]][board.selected[1]] == PInvalid {
 			board.selectNextFull("right")
 		}
 	case "left":
@@ -150,7 +152,7 @@ func (board *Board) selectNextFull(direction string) {
 		} else {
 			board.selected[0]--
 		}
-		if points[board.selected[0]][board.selected[1]] == chuckablast.PInvalid {
+		if points[board.selected[0]][board.selected[1]] == PInvalid {
 			board.selectNextFull("left")
 		}
 	case "up":
@@ -159,7 +161,7 @@ func (board *Board) selectNextFull(direction string) {
 		} else {
 			board.selected[1]--
 		}
-		if points[board.selected[0]][board.selected[1]] == chuckablast.PInvalid {
+		if points[board.selected[0]][board.selected[1]] == PInvalid {
 			board.selectNextFull("up")
 		}
 	case "down":
@@ -168,7 +170,7 @@ func (board *Board) selectNextFull(direction string) {
 		} else {
 			board.selected[1]++
 		}
-		if points[board.selected[0]][board.selected[1]] == chuckablast.PInvalid {
+		if points[board.selected[0]][board.selected[1]] == PInvalid {
 			board.selectNextFull("down")
 		}
 	}
@@ -179,25 +181,25 @@ func (board *Board) move(direction string) bool {
 	switch direction {
 	case "right":
 		success = board.Move(board.selected,
-			chuckablast.Point{board.selected[0] + 2, board.selected[1]})
+			Point{board.selected[0] + 2, board.selected[1]})
 		if success {
 			board.selected[0] = board.selected[0] + 2
 		}
 	case "left":
 		success = board.Move(board.selected,
-			chuckablast.Point{board.selected[0] - 2, board.selected[1]})
+			Point{board.selected[0] - 2, board.selected[1]})
 		if success {
 			board.selected[0] = board.selected[0] - 2
 		}
 	case "up":
 		success = board.Move(board.selected,
-			chuckablast.Point{board.selected[0], board.selected[1] - 2})
+			Point{board.selected[0], board.selected[1] - 2})
 		if success {
 			board.selected[1] = board.selected[1] - 2
 		}
 	case "down":
 		success = board.Move(board.selected,
-			chuckablast.Point{board.selected[0], board.selected[1] + 2})
+			Point{board.selected[0], board.selected[1] + 2})
 		if success {
 			board.selected[1] = board.selected[1] + 2
 		}
@@ -210,12 +212,12 @@ func (board *Board) move(direction string) bool {
 
 func (board *Board) hold() {
 	points := board.Points()
-	if points[board.selected[0]][board.selected[1]] != chuckablast.PFull {
+	if points[board.selected[0]][board.selected[1]] != PFull {
 		return
 	}
 
 	if board.held {
-		board.validMoves = &[]chuckablast.Point{}
+		board.validMoves = &[]Point{}
 	} else {
 		board.validMoves = board.Select(board.selected[0], board.selected[1])
 	}
@@ -224,9 +226,9 @@ func (board *Board) hold() {
 }
 
 func main() {
-	b := chuckablast.NewBoard()
-	board := &Board{b, &[13][13]point{}, chuckablast.Point{5, 2}, false,
-		&[]chuckablast.Point{}, false, []*termloop.Text{}}
+	b := NewGame()
+	board := &Board{b, &[13][13]point{}, Point{5, 2}, false,
+		&[]Point{}, false, []*termloop.Text{}}
 
 	board.build()
 
@@ -283,10 +285,7 @@ func (board *Board) drawValidMoves(screen *termloop.Screen) {
 	}
 }
 
-func (board *Board) drawEndtext(screen *termloop.Screen, x int, y int,
-	text string) {
-	tltext := termloop.NewText(x, y, text, termloop.ColorWhite,
-		termloop.ColorBlack)
-	board.texts = append(board.texts, tltext)
-	screen.AddEntity(tltext)
+func (board *Board) drawEndtext(screen *termloop.Screen, i int, text string) {
+	board.texts[i].SetText(text)
+	board.texts[i].Draw(screen)
 }
