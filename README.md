@@ -1,4 +1,4 @@
-## Chuck-A-Blast!
+## Chuck-A-Blast! චක-බ්ලාස්ට් :D 
 
 Chuck-A-Blast is a board game that used to be somewhat popular in my country some time ago.
 
