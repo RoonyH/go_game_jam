@@ -4,7 +4,7 @@ Chuck-A-Blast is a board game that used to be somewhat popular in my country som
 
 ### How to play
 
-* The board contains 45 holes and 44 pieces. The lucky hole that is not occupied is right in the middle.
+* The board contains 45 holes, arranged in a cross shape, and 44 pieces. The lucky hole that is not occupied is right in the middle.
 
 * Objective of the game is to get rid of as many pieces as possible.
 
@@ -18,26 +18,28 @@ Chuck-A-Blast is a board game that used to be somewhat popular in my country som
 
 ### How to run
 If you have Go,
-clone the repo and get [termloop](https://github.com/JoelOtter/termloop) and run `main/main.go`
+clone the repo and get [termloop](https://github.com/JoelOtter/termloop) and run `main.go` and `game.go`
 
 ~~~
-git clone https://github.com/RoonyH/go_game_jam/
+git clone https://github.com/RoonyH/go_game_jam
 go get -u github.com/JoelOtter/termloop 
 cd go_game_jam
-go run main/main.go
+go run main.go game.go
 ~~~
 
 I will add some binaries soon.
 
 ### Behind the scenes
 
-This implementation of Chuck-A-Blast is pure Go.
+This implementation of Chuck-A-Blast is pure [Go](https://golang.org/).
 
-Apart from the standard go packages its only dependancy is the awesome [termloop](https://github.com/JoelOtter/termloop)
+Apart from the standard Go packages its only dependancy is the awesome [termloop](https://github.com/JoelOtter/termloop)
+
+This is written in a weekend for the codelympics project [Go Game Jam](https://codelympics.io/projects/2)
 
 ### alert!
 
-The code is written in few hours and I am new to go.
+The code is written in few hours and I am new to Go.
 The code is pretty bad :( I will refactor it soon.
 
 If you are looking inside I appologize for what ever horrible things you may see.
