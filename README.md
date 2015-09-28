@@ -31,9 +31,9 @@ go run main.go game.go
 
 If you don't have Go or don't want to build, here are some pre-built binaries.
 
-[MacOS 64bit](https://github.com/RoonyH/go_game_jam/raw/master/build/darwin64)
-[Linux 64bit](https://github.com/RoonyH/go_game_jam/raw/master/build/linux64)
-[Windows 64bit](https://github.com/RoonyH/go_game_jam/raw/master/build/darwin64)
+[MacOS 64bit](https://github.com/RoonyH/go_game_jam/raw/master/build/darwin64)  
+[Linux 64bit](https://github.com/RoonyH/go_game_jam/raw/master/build/linux64)  
+[Windows 64bit](https://github.com/RoonyH/go_game_jam/raw/master/build/darwin64)  
 
 ### Behind the scenes
 
